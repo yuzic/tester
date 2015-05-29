@@ -2,7 +2,7 @@
 $tester = new \Tester();
 $tester->setUrl(Config::get('betfaq'));
 $tester->send('/profile/login/', [
-    'email' => 'prototypenk@gmail.com',
+    'email' => 'yuzic',
     'password'  => 123456786,
 ]);
 //
