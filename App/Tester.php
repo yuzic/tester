@@ -7,16 +7,19 @@ class Tester
     public $response = null;
     public $httpCode = 0;
     public $url = null;
+    public $urlLast = null;
 
     /**
-     * @param $url
-     * @param $params
+     * Посылаем запросы на сервер
+     * @param string  $url
+     * @param array $params
+     * @param bool $isGet
      * @return array
      */
-    public function send($url, $params)
+    public function send($url, $params = [], $isGet = false)
     {
-
-        $request = $this->url . $url;
+        $this->urlLast = $url;
+        $request = 'http://' . $this->url . $url;
         // Generate curl request
         $session = curl_init($request);
         // Tell curl to use HTTP POST
@@ -25,6 +28,9 @@ class Tester
         curl_setopt($session, CURLOPT_FOLLOWLOCATION, true);
         curl_setopt($session, CURLOPT_POST, true);
         // Tell curl that this is the body of the POST
+        if ($isGet) {
+            curl_setopt($session, CURLOPT_CUSTOMREQUEST, 'GET');
+        }
         curl_setopt($session, CURLOPT_POSTFIELDS, $params);
         // Tell curl not to return headers, but do return the response
         curl_setopt($session, CURLOPT_HEADER, false);
@@ -49,7 +55,7 @@ class Tester
      */
     public function seeText($text)
     {
-        return  strpos($this->response, $text);
+        return  $this->stdout(strpos($this->response, $text));
     }
 
     /**
@@ -77,7 +83,7 @@ class Tester
      */
     public function seeResponseCode($code)
     {
-        return $code === $this->httpCode;
+        return $this->stdout($code === $this->httpCode, ' -- status: '.$code);
     }
 
     /**
@@ -86,5 +92,16 @@ class Tester
     public function setUrl($url)
     {
         $this->url  = $url;
+    }
+
+    public function stdout($bool, $status = null)
+    {
+        $lengthSpace = 90 - strlen($this->urlLast . $status);
+        if ($bool > 0){
+            Helper_Console::stdoutColor($this->urlLast . $status . str_repeat(' ', $lengthSpace) ."Ok\n", 32);
+        } else {
+            Helper_Console::stdoutColor($this->urlLast . $status . str_repeat(' ', $lengthSpace) . "Fail\n", Helper_Console::FG_RED);
+        }
+
     }
 }
