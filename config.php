@@ -11,5 +11,13 @@ return [
     'prisnilos' => [
         'stage' => 'prisnilos.su',
         'master' => 'prisnilos.su',
-    ]
+    ],
+    'regforum' => [
+        'stage' => 'regforum.ru',
+        'master' => 'regforum.ru',
+    ],
+    'azbukadiet'    => [
+        'stage' => 'www.azbukadiet.ru',
+        'master' => 'www.azbukadiet.ru',
+    ],
 ];
